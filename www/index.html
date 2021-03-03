@@ -10,8 +10,7 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
-
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
     <!-- Required meta tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
@@ -54,18 +53,18 @@
                             <ul>
                               <li class="item-content item-input">
                                 <div class="item-inner">
-                                  <div class="item-title item-label">Name</div>
+                                  <div class="item-title item-label">Usuario</div>
                                   <div class="item-input-wrap">
-                                    <input type="text" placeholder="Your name" />
+                                    <input type="text" placeholder="Usuario" />
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
                               </li>
                               <li class="item-content item-input">
                                 <div class="item-inner">
-                                  <div class="item-title item-label">Password</div>
+                                  <div class="item-title item-label">Contraseña</div>
                                   <div class="item-input-wrap">
-                                    <input type="password" placeholder="Your password" />
+                                    <input type="password" placeholder="Contraseña" />
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
@@ -75,8 +74,8 @@
                     </div>
                     <div class="block">
                         <div class="row">
-                            <div class="col"><a href="#">Recuperar clave</a></div>
-                            <div class="col"><a href="#">Registrarse</a></div>
+                            <div class="col"><a href="/recuperardocente/">Recuperar clave</a></div>
+                            <div class="col"><a href="/registrodocente/">Registrarse</a></div>
                         </div>
                     <div class="block">
                         <div class="row">
