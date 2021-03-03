@@ -23,6 +23,14 @@ var app = new Framework7({
         path: '/index/',
         url: 'index.html',
       },
+      {
+        path: '/registrodocente/',
+        url: 'registrodocente.html',
+      },
+      {
+        path: '/recuperardocente/',
+        url: 'recuperardocente.html',
+      },
     ]
     // ... other parameters
   });
@@ -53,9 +61,3 @@ $$(document).on('page:init', '.page[data-name="about"]', function (e) {
 })
 
 
-function docente(){
- 
-  }
-function alumno() {
- 
-}
