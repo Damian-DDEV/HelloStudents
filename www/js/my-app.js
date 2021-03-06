@@ -31,6 +31,14 @@ var app = new Framework7({
         path: '/recuperardocente/',
         url: 'recuperardocente.html',
       },
+      {
+        path: '/aulad/',
+        url: 'aulad.html',
+      },
+      {
+        path: '/editard/',
+        url: 'editard.html',
+      },
     ]
     // ... other parameters
   });
@@ -47,12 +55,14 @@ $$(document).on('deviceready', function() {
 $$(document).on('page:init', function (e) {
     // Do something here when page loaded and initialized
     console.log(e);
+
+    //LOGIN DOCENTE
   $$("#ingresar").on('click', function(){
     var usuario = $$("#usuario").val();
     var clave = $$("#clave").val();
     firebase.auth().signInWithEmailAndPassword(usuario, clave)
     .then((user) => {
-      console.log("ingresaste");
+      mainView.router.navigate('/aulad/');
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -70,9 +80,10 @@ $$(document).on('page:init', function (e) {
   
     
 // Option 2. Using live 'page:init' event handlers for each page
-$$(document).on('page:init', '.page[data-name="registrodocente"]', function (e) {
-    // Do something here when page with data-name="about" attribute loaded and initialized
-    console.log(e);
+$$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
+  $$("#editar").on('click', function(){
+    mainView.router.navigate('/editard/');
+  })
 })
 
 
