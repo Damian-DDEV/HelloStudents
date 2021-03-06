@@ -37,6 +37,7 @@ var app = new Framework7({
 
 var mainView = app.views.create('.view-main');
 
+
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
     console.log("Device is ready!");
@@ -46,16 +47,30 @@ $$(document).on('deviceready', function() {
 $$(document).on('page:init', function (e) {
     // Do something here when page loaded and initialized
     console.log(e);
-    $$("#docente").on('click', function(){
-      mainView.router.navigate('/index/');
+  $$("#ingresar").on('click', function(){
+    var usuario = $$("#usuario").val();
+    var clave = $$("#clave").val();
+    firebase.auth().signInWithEmailAndPassword(usuario, clave)
+    .then((user) => {
+      console.log("ingresaste");
+    })
+    .catch((error) => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode + errorMessage);
     });
-    $$("#alumno").on('click', function(){
-      mainView.router.navigate('/alumno/');
-    });
-})
-
+      });
+      $$("#docente").on('click', function(){
+        mainView.router.navigate('/index/');
+      });
+      $$("#alumno").on('click', function(){
+        mainView.router.navigate('/alumno/');
+      });
+  })
+  
+    
 // Option 2. Using live 'page:init' event handlers for each page
-$$(document).on('page:init', '.page[data-name="about"]', function (e) {
+$$(document).on('page:init', '.page[data-name="registrodocente"]', function (e) {
     // Do something here when page with data-name="about" attribute loaded and initialized
     console.log(e);
 })

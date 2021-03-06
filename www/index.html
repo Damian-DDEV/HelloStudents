@@ -55,7 +55,7 @@
                                 <div class="item-inner">
                                   <div class="item-title item-label">Usuario</div>
                                   <div class="item-input-wrap">
-                                    <input type="text" placeholder="Usuario" />
+                                    <input id="usuario" type="text" placeholder="Usuario" />
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
@@ -64,7 +64,7 @@
                                 <div class="item-inner">
                                   <div class="item-title item-label">Contraseña</div>
                                   <div class="item-input-wrap">
-                                    <input type="password" placeholder="Contraseña" />
+                                    <input id="clave" type="password" placeholder="Contraseña"/>
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
@@ -79,7 +79,7 @@
                         </div>
                     <div class="block">
                         <div class="row">
-                            <div class="col"><button class="col button button-large button-fill">Ingresar</button></div>
+                            <div class="col"><button id="ingresar" class="col button button-large button-fill" value="clave">Ingresar</button></div>
                         </div>
                         
                     </div>
@@ -93,7 +93,8 @@
 
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-
+<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+ 	
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -107,6 +108,7 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 </script>
+
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/framework7/framework7-bundle.min.js"></script>
