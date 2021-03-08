@@ -48,7 +48,8 @@ var app = new Framework7({
   });
 
 var mainView = app.views.create('.view-main');
-
+var db = firebase.firestore();
+var usuario = 
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
@@ -85,7 +86,6 @@ $$(document).on('page:init', function (e) {
       });
   })
   
-    
 //AULA DOCENTE
 $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
   $$("#cerrarsesion").on('click', function(){
@@ -97,29 +97,34 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     });
   })
 })
+
 //REGISTRAR
 $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
   $$("#registrar").on('click', function(){
     var correor = $$("#correor").val();
     var claver = $$("#claver").val();
+    var apellidor = $$("#apellidor").val();
+    var nombrer = $$("#nombrer").val();
     firebase.auth().createUserWithEmailAndPassword(correor, claver)
-  .then((user) => {
-    mainView.router.navigate('/index/');
-    alert("Te has registrado exitosamente");
-  })
-  .catch((error) => {
+    .then((user) => {
+      mainView.router.navigate('/index/');
+      alert("se registro correctamente");
+    })
+    .catch((error) => {
     var errorCode = error.code;
     var errorMessage = error.message;
     alert(errorMessage);
   });
   })
 })
+
 //DOCENTE
   $$(document).on('page:init', '.page[data-name="docente"]', function (e) {
     if ( $$('#docente').hasClass('azul') ) {
       $$('#docente').removeClass('azul').addClass('rojo');
     }
   })
+
 //ALUMNO
   $$(document).on('page:init', '.page[data-name="alumno"]', function (e) {
     if ( $$('#docente').hasClass('rojo') ) {
