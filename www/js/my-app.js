@@ -16,16 +16,20 @@ var app = new Framework7({
     // Add default routes
     routes: [
       {
-        path: '/alumno/',
-        url: 'alumno.html',
-      },
-      {
         path: '/index/',
         url: 'index.html',
       },
       {
-        path: '/registrodocente/',
-        url: 'registrodocente.html',
+        path: '/docente/',
+        url: 'docente.html',
+      },
+      {
+        path: '/alumno/',
+        url: 'alumno.html',
+      },
+      {
+        path: '/registrar/',
+        url: 'registrar.html',
       },
       {
         path: '/recuperardocente/',
@@ -58,32 +62,69 @@ $$(document).on('page:init', function (e) {
 
     //LOGIN DOCENTE
   $$("#ingresar").on('click', function(){
-    var usuario = $$("#usuario").val();
-    var clave = $$("#clave").val();
-    firebase.auth().signInWithEmailAndPassword(usuario, clave)
+    var correod = $$("#correod").val();
+    var claved = $$("#claved").val();
+    firebase.auth().signInWithEmailAndPassword(correod, claved)
     .then((user) => {
       mainView.router.navigate('/aulad/');
     })
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
-      console.log(errorCode + errorMessage);
+      alert(errorMessage);
     });
       });
       $$("#docente").on('click', function(){
-        mainView.router.navigate('/index/');
+        mainView.router.navigate('/docente/');
       });
       $$("#alumno").on('click', function(){
         mainView.router.navigate('/alumno/');
+        if ( $$('#docente').hasClass('azul') ) {
+          $$('#docente').removeClass('azul').addClass('rojo');
+        }
       });
   })
   
     
-// Option 2. Using live 'page:init' event handlers for each page
+//AULA DOCENTE
 $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
-  $$("#editar").on('click', function(){
-    mainView.router.navigate('/editard/');
+  $$("#cerrarsesion").on('click', function(){
+    mainView.router.navigate('/index/');
+    firebase.auth().signOut().then(() => {
+      alert("Se ha cerrado la sesion")
+    }).catch((error) => {
+      alert(error);
+    });
   })
 })
-
-
+//REGISTRAR
+$$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
+  $$("#registrar").on('click', function(){
+    var correor = $$("#correor").val();
+    var claver = $$("#claver").val();
+    firebase.auth().createUserWithEmailAndPassword(correor, claver)
+  .then((user) => {
+    mainView.router.navigate('/index/');
+    alert("Te has registrado exitosamente");
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    alert(errorMessage);
+  });
+  })
+})
+//DOCENTE
+  $$(document).on('page:init', '.page[data-name="docente"]', function (e) {
+    if ( $$('#docente').hasClass('azul') ) {
+      $$('#docente').removeClass('azul').addClass('rojo');
+    }
+  })
+//ALUMNO
+  $$(document).on('page:init', '.page[data-name="alumno"]', function (e) {
+    if ( $$('#docente').hasClass('rojo') ) {
+      $$('#docente').removeClass('rojo').addClass('azul');
+    } else if ($$('#docente').hasClass('rojo')) {
+      $$('#docente').removeClass('rojo').addClass('azul');
+    }
+  })
