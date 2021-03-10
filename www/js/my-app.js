@@ -49,7 +49,6 @@ var app = new Framework7({
 
 var mainView = app.views.create('.view-main');
 var db = firebase.firestore();
-var usuario = 
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
@@ -95,6 +94,10 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     }).catch((error) => {
       alert(error);
     });
+  })
+  $$("#agregaraula").on('click', function(){
+    var nombreaula = $$("#nombreaula").val();
+    $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill'></input></div>");
   })
 })
 

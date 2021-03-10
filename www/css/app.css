@@ -3,6 +3,14 @@
 .rojo {
   background-color: red;
 }
+.aula {
+  background-color: royalblue;
+  height: 20px;
+  width: 20px;
+}
+h1 {
+  text-align: center;
+}
 
 
 
