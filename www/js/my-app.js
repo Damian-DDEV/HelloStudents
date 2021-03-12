@@ -49,6 +49,8 @@ var app = new Framework7({
 
 var mainView = app.views.create('.view-main');
 var db = firebase.firestore();
+var emails;
+var colUsuarios = db.collection("usuarios");
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
@@ -66,7 +68,9 @@ $$(document).on('page:init', function (e) {
     var claved = $$("#claved").val();
     firebase.auth().signInWithEmailAndPassword(correod, claved)
     .then((user) => {
-      mainView.router.navigate('/aulad/');
+      emails = correod;
+      console.log(emails);
+      mainView.router.navigate('/aulad/');      
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -79,9 +83,6 @@ $$(document).on('page:init', function (e) {
       });
       $$("#alumno").on('click', function(){
         mainView.router.navigate('/alumno/');
-        if ( $$('#docente').hasClass('azul') ) {
-          $$('#docente').removeClass('azul').addClass('rojo');
-        }
       });
   })
   
@@ -94,22 +95,45 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     }).catch((error) => {
       alert(error);
     });
+
   })
   $$("#agregaraula").on('click', function(){
     var nombreaula = $$("#nombreaula").val();
     $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill'></input></div>");
   })
+  /*var docRef = db.collection("usuarios").doc(emails);
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+        console.log("Document data:", doc.data());
+        $$("#bienvenido").val(doc.data().nombre);
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+    }
+    }).catch((error) => {
+    console.log("Error getting document:", error);
+})*/
+var docRef = db.collection("usuarios").doc(emails);
+docRef.get().then(function(doc) {
+    if (doc.exists) {
+       var nomb = doc.data().nombre;
+       $$("#bienvenido").val(nomb);
+}
+});
 })
+
 
 //REGISTRAR
 $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
   $$("#registrar").on('click', function(){
     var correor = $$("#correor").val();
     var claver = $$("#claver").val();
-    var apellidor = $$("#apellidor").val();
     var nombrer = $$("#nombrer").val();
+    var apellidor = $$("#apellidor").val();
     firebase.auth().createUserWithEmailAndPassword(correor, claver)
     .then((user) => {
+      datos = { nombre: nombrer, apellido: apellidor};
+      colUsuarios.doc(correor).set(datos);
       mainView.router.navigate('/index/');
       alert("se registro correctamente");
     })
@@ -135,4 +159,5 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
     } else if ($$('#docente').hasClass('rojo')) {
       $$('#docente').removeClass('rojo').addClass('azul');
     }
+
   })
