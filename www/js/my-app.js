@@ -62,14 +62,13 @@ $$(document).on('page:init', function (e) {
     // Do something here when page loaded and initialized
     console.log(e);
 
-    //LOGIN DOCENTE
+    //LOGIN
   $$("#ingresar").on('click', function(){
     var correod = $$("#correod").val();
     var claved = $$("#claved").val();
     firebase.auth().signInWithEmailAndPassword(correod, claved)
     .then((user) => {
       emails = correod;
-      console.log(emails);
       mainView.router.navigate('/aulad/');      
     })
     .catch((error) => {
@@ -88,6 +87,17 @@ $$(document).on('page:init', function (e) {
   
 //AULA DOCENTE
 $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
+  db.collection("materia").where("NombreProfesor", "==", emails)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          $$(".aulas").append("<div class='col'><input type='button' value='"+doc.data().Nombremateria+"' class='col button button-large button-fill'></input></div>");
+          console.log(doc.id);
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
   $$("#cerrarsesion").on('click', function(){
     mainView.router.navigate('/index/');
     firebase.auth().signOut().then(() => {
@@ -95,29 +105,26 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     }).catch((error) => {
       alert(error);
     });
-
   })
   $$("#agregaraula").on('click', function(){
     var nombreaula = $$("#nombreaula").val();
     $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill'></input></div>");
+    db.collection("materia").doc().set({
+      Nombremateria: ""+nombreaula+"",
+      NombreProfesor: ""+emails+""
+    })
+  .then(() => {
+      console.log("Document successfully written!");
   })
-  /*var docRef = db.collection("usuarios").doc(emails);
-  docRef.get().then((doc) => {
-    if (doc.exists) {
-        console.log("Document data:", doc.data());
-        $$("#bienvenido").val(doc.data().nombre);
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-    }).catch((error) => {
-    console.log("Error getting document:", error);
-})*/
-var docRef = db.collection("usuarios").doc(emails);
-docRef.get().then(function(doc) {
-    if (doc.exists) {
-       var nomb = doc.data().nombre;
-       $$("#bienvenido").val(nomb);
+  .catch((error) => {
+      console.error("Error writing document: ", error);
+  });
+  })
+  var bienvenido = db.collection("usuarios").doc(emails);
+  bienvenido.get().then(function(doc) {
+  if (doc.exists) {
+    var nomb = doc.data().nombre;
+    $$("#bienvenido").html(nomb);
 }
 });
 })
