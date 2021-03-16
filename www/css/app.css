@@ -3,19 +3,22 @@
 .rojo {
   background-color: red;
 }
-.aula {
-  background-color: royalblue;
-  height: 20px;
-  width: 20px;
-}
+
 h1 {
   text-align: center;
 }
-
-
-
-
-
+.centrartexto {
+  text-align: center;
+}
+.aulas {
+  width: 100%;
+}
+.espacio {
+  margin-bottom: 5%;
+}
+#imgperfil{
+  padding: 5%, 0%, 0%, 20% !important;
+}
 
 
 
