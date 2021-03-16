@@ -43,6 +43,10 @@ var app = new Framework7({
         path: '/editard/',
         url: 'editard.html',
       },
+      {
+        path: '/aulan/',
+        url: 'aulan.html',
+      },
     ]
     // ... other parameters
   });
@@ -50,6 +54,7 @@ var app = new Framework7({
 var mainView = app.views.create('.view-main');
 var db = firebase.firestore();
 var emails;
+var nombreaula;
 var colUsuarios = db.collection("usuarios");
 
 // Handle Cordova Device Ready Event
@@ -91,8 +96,11 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          $$(".aulas").append("<div class='col'><input type='button' value='"+doc.data().Nombremateria+"' class='col button button-large button-fill'></input></div>");
+          $$(".aulas").append("<div class='col'><input id='"+doc.id+"' type='button' value='"+doc.data().Nombremateria+"' class='col button button-large button-fill redirn'></input></div>");
           console.log(doc.id);
+          $$(".redirn").on('click', function(){
+            mainView.router.navigate('/aulan/');
+          })      
         });
     })
     .catch((error) => {
@@ -108,18 +116,20 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
   })
   $$("#agregaraula").on('click', function(){
     var nombreaula = $$("#nombreaula").val();
-    $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill'></input></div>");
+    $$(".aulas").append("<div class='col'><input type='button' id='"+doc.id+"' value='"+nombreaula+"' class='col button button-large button-fill'></input></div>");
     db.collection("materia").doc().set({
       Nombremateria: ""+nombreaula+"",
       NombreProfesor: ""+emails+""
     })
   .then(() => {
       console.log("Document successfully written!");
+
   })
   .catch((error) => {
       console.error("Error writing document: ", error);
   });
   })
+
   var bienvenido = db.collection("usuarios").doc(emails);
   bienvenido.get().then(function(doc) {
   if (doc.exists) {
@@ -127,6 +137,7 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
     $$("#bienvenido").html(nomb);
 }
 });
+
 })
 
 
@@ -152,11 +163,17 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
   })
 })
 
-//DOCENTE
-  $$(document).on('page:init', '.page[data-name="docente"]', function (e) {
-    if ( $$('#docente').hasClass('azul') ) {
-      $$('#docente').removeClass('azul').addClass('rojo');
-    }
+//AULAN
+  $$(document).on('page:init', '.page[data-name="aulan"]', function (e) {
+    db.collection("materia").where("Nombremateria", "==", doc.id)
+    .get().then(function(doc) {
+    if (doc.exists) {
+      console.log(doc);
+    var nombremat = doc.data().Nombremateria;
+   
+    
+  }
+  });
   })
 
 //ALUMNO
