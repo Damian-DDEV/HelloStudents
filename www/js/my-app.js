@@ -20,10 +20,6 @@ var app = new Framework7({
         url: 'index.html',
       },
       {
-        path: '/docente/',
-        url: 'docente.html',
-      },
-      {
         path: '/alumno/',
         url: 'alumno.html',
       },
@@ -47,6 +43,10 @@ var app = new Framework7({
         path: '/aulan/',
         url: 'aulan.html',
       },
+      {
+        path: '/asignartarea/',
+        url: 'asignartarea.html',
+      },
     ]
     // ... other parameters
   });
@@ -54,7 +54,10 @@ var app = new Framework7({
 var mainView = app.views.create('.view-main');
 var db = firebase.firestore();
 var emails;
+var idaula;
 var nombreaula;
+var idamateria;
+var buscaralumno;
 var colUsuarios = db.collection("usuarios");
 
 // Handle Cordova Device Ready Event
@@ -64,7 +67,7 @@ $$(document).on('deviceready', function() {
 
 // Option 1. Using one 'page:init' handler for all pages
 $$(document).on('page:init', '.page[data-name="index"]', function (e) {
-  $$("#ingresar").on('click', ingresar);
+  $$("#ingresard").on('click', ingresard);
   if ( $$('#docente').hasClass('azul')) {
     $$('#docente').removeClass('azul').addClass('rojo');
     }
@@ -82,16 +85,25 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
   .get()
   .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        $$(".aulas").append("<div class='col'><input type='button' value='"+doc.data().Nombremateria+"' class='col button button-large button-fill redirn espacio'></input></div>");
-        console.log(doc.id);
-        $$(".redirn").on('click', function(){
-          mainView.router.navigate('/aulan/');
-        })      
+        $$(".aulas").append("<div class='col'><input type='button' id='"+doc.id+"' value='"+doc.data().Nombremateria+"' class='col button button-large button-fill redirn espacio'></input></div>");
+      }); 
+      $$(".redirn").on('click', function(){
+        mainView.router.navigate('/aulan/');
+        idamateria = $$(this).attr("id");
+        var nombremateria = db.collection("materia").doc(idamateria);
+        nombremateria.get().then(function(doc) {
+        if (doc.exists) {
+          var nombremat = doc.data().Nombremateria;
+          $$("#nombremateria").html(nombremat);
+          console.log(nombremat);
+      }
       });
+      })    
   })
   .catch((error) => {
       console.log("Error getting documents: ", error);
   });
+
 $$("#cerrarsesion").on('click', cerrarsesion);
 $$("#agregaraula").on('click', function(){
   var nombreaula = $$("#nombreaula").val();
@@ -104,8 +116,9 @@ $$("#agregaraula").on('click', function(){
     console.log("Document successfully written!");
 })
 })
-  var bienvenido = db.collection("usuarios").doc(emails);
+  var bienvenido = colUsuarios.doc(emails);
   bienvenido.get().then(function(doc) {
+
   if (doc.exists) {
     var nomb = doc.data().nombre;
     $$("#bienvenido").html(nomb);
@@ -121,14 +134,45 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
 
 //AULAN
   $$(document).on('page:init', '.page[data-name="aulan"]', function (e) {
-    db.collection("materia").where("Nombremateria", "==", doc.id)
-    .get().then(function(doc) {
-    if (doc.exists) {
-      console.log(doc);
-    var nombremat = doc.data().Nombremateria;
-   
-  }
-  });
+    db.collection("usuarios").where("nombre", "==", "pedro")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+       console.log(doc);
+      }); 
+
+  })
+    /*colUsuarios.doc(emails).get()
+    .then((doc) => {
+        console.log(doc.id, "=>", doc.data().nombre, "=>", doc.data().apellido);
+    })*/
+    /*.get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+        });  
+    })  .catch((error) => {
+      console.log("Error getting documents: ", error);
+  });*/
+  
+    
+    $$("#asignartarea").on('click', function(){
+      mainView.router.navigate('/asignartarea/');
+      alert("click");
+     })
+     $$("#buscaralumno").on('click', function(){
+      alert('click');
+    })
+    $$("#nombreaula").html(idamateria);
+
+
+    
+
+    
+
+
+
+
   })
 
 //ALUMNO
@@ -138,28 +182,15 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
       $$('#alumno').removeClass('azul').addClass('rojo');
       }
       $$("#docente").on('click', function(){
-        mainView.router.navigate('/docente/');
+        mainView.router.navigate('/index/');
       })
-      $$("#ingresar").on('click', ingresar);
+      $$("#ingresara").on('click', ingresara);
   })
-  
-  $$(document).on('page:init', '.page[data-name="docente"]', function (e) {
-    if ( $$('#docente').hasClass('azul')) {
-      $$('#docente').removeClass('azul').addClass('rojo');
-      }
-    if ($$('#alumno').hasClass('rojo')){
-      $$('#alumno').removeClass('rojo').addClass('azul');
-    }
-    $$("#alumno").on('click', function(){
-      mainView.router.navigate('/alumno/');
-    })
-    $$("#ingresar").on('click', ingresar);
-   })
 
 
 
 
-function ingresar (){
+function ingresard (){
   var correod = $$("#correod").val();
   var claved = $$("#claved").val();
   firebase.auth().signInWithEmailAndPassword(correod, claved)
@@ -170,7 +201,7 @@ function ingresar (){
   .catch((error) => {
     var errorCode = error.code;
     var errorMessage = error.message;
-    alert(errorMessage);
+    alert(errorMessage + errorCode);
   });
     $$("#docente").on('click', function(){
       mainView.router.navigate('/docente/');
@@ -179,6 +210,28 @@ function ingresar (){
       mainView.router.navigate('/alumno/');
     });
 }
+
+function ingresara (){
+  var correoa = $$("#correoa").val();
+  var clavea = $$("#clavea").val();
+  firebase.auth().signInWithEmailAndPassword(correoa, clavea)
+  .then((user) => {
+    emails = correod;
+    mainView.router.navigate('/aulad/');      
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    alert(errorMessage + errorCode);
+  });
+    $$("#docente").on('click', function(){
+      mainView.router.navigate('/docente/');
+    });
+    $$("#alumno").on('click', function(){
+      mainView.router.navigate('/alumno/');
+    });
+}
+
 
 
 function cerrarsesion(){
@@ -209,3 +262,4 @@ function registrar() {
     alert(errorMessage);
   });
 }
+

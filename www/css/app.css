@@ -19,7 +19,14 @@ h1 {
 #imgperfil{
   padding: 5%, 0%, 0%, 20% !important;
 }
-
+.ico {
+  height: 10%;
+  width: 10%;
+  float: right;
+}
+#buscaralumno { 
+  width: 100vw;
+}
 
 
 
