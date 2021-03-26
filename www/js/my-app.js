@@ -44,8 +44,12 @@ var app = new Framework7({
         url: 'aulan.html',
       },
       {
-        path: '/asignartarea/',
-        url: 'asignartarea.html',
+        path: '/enviartarea/',
+        url: 'enviartarea.html',
+      },
+      {
+        path: '/aulaa/',
+        url: 'aulaa.html',
       },
     ]
     // ... other parameters
@@ -58,6 +62,7 @@ var idaula;
 var nombreaula;
 var idamateria;
 var buscaralumno;
+var nombremat;
 var colUsuarios = db.collection("usuarios");
 
 // Handle Cordova Device Ready Event
@@ -93,7 +98,7 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
         var nombremateria = db.collection("materia").doc(idamateria);
         nombremateria.get().then(function(doc) {
         if (doc.exists) {
-          var nombremat = doc.data().Nombremateria;
+          nombremat = doc.data().Nombremateria;
           $$("#nombremateria").html(nombremat);
           console.log(nombremat);
       }
@@ -110,7 +115,8 @@ $$("#agregaraula").on('click', function(){
   $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill redirn espacio'></input></div>");
   db.collection("materia").doc().set({
     Nombremateria: ""+nombreaula+"",
-    NombreProfesor: ""+emails+""
+    NombreProfesor: ""+emails+"",
+    Tarea: ""
   })
 .then(() => {
     console.log("Document successfully written!");
@@ -134,42 +140,28 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
 
 //AULAN
   $$(document).on('page:init', '.page[data-name="aulan"]', function (e) {
-    db.collection("usuarios").where("nombre", "==", "pedro")
+    db.collection("usuarios")
     .get()
     .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-       console.log(doc);
-      }); 
-
-  })
-    /*colUsuarios.doc(emails).get()
-    .then((doc) => {
-        console.log(doc.id, "=>", doc.data().nombre, "=>", doc.data().apellido);
-    })*/
-    /*.get()
-    .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          console.log(doc.data());
-        });  
-    })  .catch((error) => {
-      console.log("Error getting documents: ", error);
-  });*/
-  
+            nombresn = doc.data().nombre;
+            tel = doc.data().tel;
+            $$("#nombren").append("<tr><td>"+nombresn+"<br/></td></tr>");
+            $$("#teln").append("<tr><td>"+tel+"<br/></td></tr>");
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
     
     $$("#asignartarea").on('click', function(){
-      mainView.router.navigate('/asignartarea/');
+      mainView.router.navigate('/enviartarea/');
       alert("click");
      })
      $$("#buscaralumno").on('click', function(){
       alert('click');
     })
     $$("#nombreaula").html(idamateria);
-
-
-    
-
-    
-
 
 
 
@@ -186,6 +178,17 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
       })
       $$("#ingresara").on('click', ingresara);
   })
+  
+  $$(document).on('page:init', '.page[data-name="enviartarea"]', function (e) {
+     $$("#enviartarea").on('click', function(){
+      prueba = $$("#tarea").text();
+      
+      db.collection("materia").doc(idamateria).update({
+        Tarea : prueba
+      });
+
+     });
+    })
 
 
 
@@ -217,7 +220,7 @@ function ingresara (){
   firebase.auth().signInWithEmailAndPassword(correoa, clavea)
   .then((user) => {
     emails = correod;
-    mainView.router.navigate('/aulad/');      
+    mainView.router.navigate('/aulaa/');      
   })
   .catch((error) => {
     var errorCode = error.code;
@@ -249,9 +252,10 @@ function registrar() {
   var claver = $$("#claver").val();
   var nombrer = $$("#nombrer").val();
   var apellidor = $$("#apellidor").val();
+  tel = $$("#tel").val();
     firebase.auth().createUserWithEmailAndPassword(correor, claver)
     .then((user) => {
-      datos = { nombre: nombrer, apellido: apellidor};
+      datos = { nombre: nombrer, apellido: apellidor, tel: tel};
       colUsuarios.doc(correor).set(datos);
       mainView.router.navigate('/index/');
       alert("se registro correctamente");
