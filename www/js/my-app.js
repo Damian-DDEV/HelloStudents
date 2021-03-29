@@ -51,26 +51,33 @@ var app = new Framework7({
         path: '/aulaa/',
         url: 'aulaa.html',
       },
+      {
+        path: '/tareaa/',
+        url: 'tareaa.html',
+      },
     ]
     // ... other parameters
   });
 
 var mainView = app.views.create('.view-main');
 var db = firebase.firestore();
+var colUsuarios = db.collection("usuarios");
 var emails;
-var idaula;
 var nombreaula;
 var idamateria;
-var buscaralumno;
 var nombremat;
-var colUsuarios = db.collection("usuarios");
-
+var bienvenido;
+var busqueda = [];
+var asignartarea = [];
+var nomb;
+var tarea;
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
     console.log("Device is ready!");
 });
 
-// Option 1. Using one 'page:init' handler for all pages
+
+//DOCENTE///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $$(document).on('page:init', '.page[data-name="index"]', function (e) {
   $$("#ingresard").on('click', ingresard);
   if ( $$('#docente').hasClass('azul')) {
@@ -83,8 +90,6 @@ $$(document).on('page:init', '.page[data-name="index"]', function (e) {
     mainView.router.navigate('/alumno/');
   })
   })
-
-//AULA DOCENTE
 $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
   db.collection("materia").where("NombreProfesor", "==", emails)
   .get()
@@ -100,7 +105,6 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
         if (doc.exists) {
           nombremat = doc.data().Nombremateria;
           $$("#nombremateria").html(nombremat);
-          console.log(nombremat);
       }
       });
       })    
@@ -109,7 +113,7 @@ $$(document).on('page:init', '.page[data-name="aulad"]', function (e) {
       console.log("Error getting documents: ", error);
   });
 
-$$("#cerrarsesion").on('click', cerrarsesion);
+$$("#cerrarsesion").on('click', cerrarsesiond);
 $$("#agregaraula").on('click', function(){
   var nombreaula = $$("#nombreaula").val();
   $$(".aulas").append("<div class='col'><input type='button' value='"+nombreaula+"' class='col button button-large button-fill redirn espacio'></input></div>");
@@ -122,11 +126,10 @@ $$("#agregaraula").on('click', function(){
     console.log("Document successfully written!");
 })
 })
-  var bienvenido = colUsuarios.doc(emails);
+  bienvenido = colUsuarios.doc(emails);
   bienvenido.get().then(function(doc) {
-
   if (doc.exists) {
-    var nomb = doc.data().nombre;
+    nomb = doc.data().nombre;
     $$("#bienvenido").html(nomb);
 }
 });
@@ -138,57 +141,120 @@ $$(document).on('page:init', '.page[data-name="registrar"]', function (e) {
   $$("#registrar").on('click', registrar);
 })
 
-//AULAN
+//AULA DONDE EL DOCENTE SELECCIONA LOS ALUMNOS
   $$(document).on('page:init', '.page[data-name="aulan"]', function (e) {
+    var searchbar = app.searchbar.create({
+      el: '.searchbar',
+      searchContainer: '.list',
+      searchIn: '.item-title',
+      on: {
+        search(sb, query, previousQuery) {
+          console.log(query, previousQuery);
+        }
+      }
+    });
     db.collection("usuarios")
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            nombresn = doc.data().nombre;
+            busqueda.push(doc.data().nombre);
             tel = doc.data().tel;
-            $$("#nombren").append("<tr><td>"+nombresn+"<br/></td></tr>");
-            $$("#teln").append("<tr><td>"+tel+"<br/></td></tr>");
         });
+        for(i=0; i<busqueda.length; i++){
+          $$("#buscadora").append("<li class='item-content'><div class='item-inner'><a href='#' id='a"+i+"'><div class='item-title'>"+busqueda[i]+"</div></a></div></li>");
+          $$("#a"+i).on('click', function(){
+            id = this.id;
+            id = id.replace('a', '');
+            list = busqueda[id];
+            $$("#listatarea").append("<li>"+list+"</li>")
+            asignartarea.push(list);
+          })
+        }
     })
     .catch((error) => {
         console.log("Error getting documents: ", error);
-    });
-    
+    });  
     $$("#asignartarea").on('click', function(){
       mainView.router.navigate('/enviartarea/');
-      alert("click");
      })
-     $$("#buscaralumno").on('click', function(){
-      alert('click');
-    })
     $$("#nombreaula").html(idamateria);
-
+    
 
 
   })
-
-//ALUMNO
-  $$(document).on('page:init', '.page[data-name="alumno"]', function (e) {
-    if ( $$('#docente').hasClass('rojo') && $$('#alumno').hasClass('azul')) {
-      $$('#docente').removeClass('rojo').addClass('azul');
-      $$('#alumno').removeClass('azul').addClass('rojo');
-      }
-      $$("#docente").on('click', function(){
-        mainView.router.navigate('/index/');
-      })
-      $$("#ingresara").on('click', ingresara);
-  })
-  
+//tarea
   $$(document).on('page:init', '.page[data-name="enviartarea"]', function (e) {
      $$("#enviartarea").on('click', function(){
-      prueba = $$("#tarea").text();
-      
-      db.collection("materia").doc(idamateria).update({
-        Tarea : prueba
-      });
-
+      tarea = $$("#tarea").text();
+      asignartarea.map((alumno) => {
+        db.collection("materia").doc(idamateria).collection("tarea").add({
+          Tarea : tarea,
+          Alumno : alumno,
+          DevolucionAlumno: "",
+          Correcion: "",
+          Materia: nombremat
+        });
+      })
      });
     })
+
+//ALUMNO//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$$(document).on('page:init', '.page[data-name="alumno"]', function (e) {
+  if ( $$('#docente').hasClass('rojo') && $$('#alumno').hasClass('azul')) {
+    $$('#docente').removeClass('rojo').addClass('azul');
+    $$('#alumno').removeClass('azul').addClass('rojo');
+    }
+    $$("#docente").on('click', function(){
+      mainView.router.navigate('/index/');
+    })
+    $$("#ingresara").on('click', ingresara);
+})
+
+$$(document).on('page:init', '.page[data-name="aulaa"]', function (e) {
+  $$("#cerrarsesion").on('click', cerrarsesiond);
+  bienvenido = colUsuarios.doc(emails);
+  bienvenido.get().then(function(doc) {
+  if (doc.exists) {
+    nomb = doc.data().nombre;
+    console.log(emails , "=>", nomb);
+}
+});
+  db.collectionGroup("tarea")
+  .get()
+  .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        if (doc.data().Alumno === nomb){
+          $$(".pruebaA").append("<div class='col'><input type='button' id='"+doc.id+"' value='"+doc.data().Materia+"      "+ "Docente:  " +nomb+" ' class='col button button-large button-fill redirn espacio'></input></div>");
+          $$("#"+doc.id).on('click', function(){
+            tareaaresolver = doc.data().Tarea
+            mainView.router.navigate('/tareaa/');
+          })
+        }
+      }); 
+  })
+  .catch((error) => {
+      console.log("Error getting documents: ", error);
+  });
+
+})
+//TAREA ALUMNO
+$$(document).on('page:init', '.page[data-name="tareaa"]', function (e) {
+  $$("#tareaaresolver").html(tareaaresolver);
+  db.collection("materia").doc(idamateria)
+  .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          console.log(doc);
+      });
+  })
+  .catch((error) => {
+      console.log("Error getting documents: ", error);
+  }); 
+  
+  $$("#tcorregir").on('click', function(){
+    talumnoaenviar = $$("#talumnoaenviar").text();
+
+  });
+})
 
 
 
@@ -219,7 +285,7 @@ function ingresara (){
   var clavea = $$("#clavea").val();
   firebase.auth().signInWithEmailAndPassword(correoa, clavea)
   .then((user) => {
-    emails = correod;
+    emails = correoa;
     mainView.router.navigate('/aulaa/');      
   })
   .catch((error) => {
@@ -237,7 +303,7 @@ function ingresara (){
 
 
 
-function cerrarsesion(){
+function cerrarsesiond(){
   mainView.router.navigate('/index/');
   firebase.auth().signOut().then(() => {
     alert("Se ha cerrado la sesion")
@@ -245,7 +311,6 @@ function cerrarsesion(){
     alert(error);
   });
 }
-
 
 function registrar() {
   var correor = $$("#correor").val();

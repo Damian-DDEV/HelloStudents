@@ -1,34 +1,46 @@
 <div class="page" data-name="aulan">
-    <div class="page-content">
-        <div class="row">
-            <h1 id="nombremateria">Aula</h1>
-        </div>
-        <div class="card data-table">
-          <table>
-            <thead>
-              <tr>
-                <th class="input-cell">
-                  <span class="table-head-label">Nombre</span>
-                  </div>
-                </th>
-                <th class="input-cell">
-                  <span class="table-head-label">Tel</span>
-                  </div>
-                </th>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td id="nombren"></td>
-                <td id="teln"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-                  <button id="asignartarea" class="col button button-large button-fill">Asignar tarea</button>
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <i class="icon icon-back"></i>
+      <div class="title">Buscar alumno</div>
     </div>
+  </div>
+  <div class="subnavbar">
+    <form class="searchbar">
+      <div class="searchbar-inner">
+        <div class="searchbar-input-wrap">
+          <input type="search" placeholder="Search" />
+          <i class="searchbar-icon"></i>
+          <span class="input-clear-button"></span>
+        </div>
+        <span class="searchbar-disable-button if-not-aurora">Cancel</span>
+      </div>
+    </form>
+</div>
+        <div class="page-content">
+            <h1>Aula</h1>
+            <div class="row">
+              <div class="col">
+                <div class="searchbar-backdrop"></div>
+                <div class="block searchbar-hide-on-search">
+                </div>
+                <div class="list searchbar-found">
+                  <ul id="buscadora">
+
+                  </ul>
+                </div>
+                <div class="block searchbar-not-found">
+                  <div class="block-inner">Nothing found</div>
+                </div>
+              </div>
+              </div>
+              <div id="listatarea">
+
+              </div>
+              <button id="asignartarea" class="col button button-large button-fill">Asignar tarea</button>
+            </div>
+        </div>
 </div>
 
 
